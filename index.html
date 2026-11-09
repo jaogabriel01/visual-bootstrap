@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Visual Bootstrap — Construtor visual de landing pages</title>
+  <!-- Bootstrap 5.3 (CSS + JS) via CDN. É a única dependência externa. -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+
+  <!-- Aviso caso o CDN do Bootstrap não carregue -->
+  <div id="cdnAlert" class="alert alert-danger rounded-0 mb-0 py-2 text-center" role="alert" hidden>
+    Não foi possível carregar o Bootstrap (CDN). Verifique sua conexão com a internet e recarregue a página.
+  </div>
+
+  <!-- Barra superior -->
+  <header class="navbar bg-body border-bottom px-3 py-2 flex-nowrap gap-3">
+    <div class="d-flex align-items-center gap-2">
+      <span class="vb-logo" aria-hidden="true">VB</span>
+      <span class="fw-bold fs-5 text-purple">Visual Bootstrap</span>
+      <span class="badge text-bg-secondary d-none d-md-inline" id="blockCount">0 seções</span>
+    </div>
+    <div class="d-flex align-items-center gap-3 ms-auto">
+      <div class="form-check form-switch mb-0 d-none d-sm-block">
+        <input class="form-check-input" type="checkbox" role="switch" id="previewSwitch">
+        <label class="form-check-label small" for="previewSwitch">Pré-visualizar</label>
+      </div>
+      <button type="button" id="clearBtn" class="btn btn-sm btn-outline-danger" disabled>Limpar</button>
+      <button type="button" id="exportBtn" class="btn btn-sm btn-purple" disabled>Exportar HTML</button>
+    </div>
+  </header>
+
+  <main class="vb-main">
+    <!-- Painel lateral: biblioteca de componentes -->
+    <aside class="vb-sidebar" aria-label="Biblioteca de componentes">
+      <div class="p-3 border-bottom">
+        <h2 class="h6 mb-2">Componentes</h2>
+        <input id="libSearch" type="search" class="form-control form-control-sm" placeholder="Buscar componente…" aria-label="Buscar componente" autocomplete="off">
+        <p class="small text-body-secondary mt-2 mb-0">Arraste para o canvas ou clique em <strong>+</strong>.</p>
+      </div>
+      <div class="vb-sidebar-scroll">
+        <div id="library" class="accordion accordion-flush"></div>
+        <p id="libEmpty" class="text-center text-body-secondary small p-4 mb-0" hidden>Nenhum componente encontrado.</p>
+      </div>
+    </aside>
+
+    <!-- Canvas -->
+    <section id="stage" class="vb-stage" aria-label="Canvas da página">
+      <div id="canvasWrap" class="vb-canvas-wrap vb-is-empty">
+        <div id="canvas"></div>
+        <div class="vb-empty">
+          <div class="fs-1 text-purple" id="emptyIcon" aria-hidden="true"></div>
+          <p class="fw-semibold mb-1">Arraste um componente para cá</p>
+          <p class="small mb-0">Navbars, Heroes, Features, Pricing, Testimonials, CTAs e Footers</p>
+        </div>
+        <div id="dropIndicator" class="vb-drop-indicator" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Seletor de ícones (usado nos slots de ícone das seções) -->
+  <div id="iconPicker" class="vb-picker" hidden role="dialog" aria-label="Escolher ícone">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <div>
+        <div class="fw-semibold small">Escolha um ícone</div>
+        <div class="text-body-secondary" style="font-size:.75rem" id="pickerHint"></div>
+      </div>
+      <button type="button" class="btn-close" id="pickerClose" aria-label="Fechar"></button>
+    </div>
+    <div class="vb-picker-grid" id="pickerGrid"></div>
+    <div class="mt-2 pt-2 border-top">
+      <button type="button" id="pickerClear" class="btn btn-sm btn-outline-danger w-100">Remover ícones deste slot</button>
+    </div>
+  </div>
+
+  <!-- Modal de exportação -->
+  <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="exportTitle">HTML exportado</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3 align-items-center mb-3">
+            <div class="col-md-6">
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" role="switch" id="fullDoc" checked>
+                <label class="form-check-label" for="fullDoc">Documento HTML completo, pronto para uso (com Bootstrap via CDN)</label>
+              </div>
+              <div class="form-text mt-0">Desligue para copiar apenas o conteúdo do &lt;body&gt;.</div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group input-group-sm">
+                <label class="input-group-text" for="pageTitle">Título da página</label>
+                <input type="text" class="form-control" id="pageTitle" value="Minha landing page" maxlength="80" autocomplete="off">
+              </div>
+            </div>
+          </div>
+          <textarea id="exportCode" class="form-control font-monospace" rows="18" readonly spellcheck="false" wrap="off" aria-label="Código HTML exportado"></textarea>
+          <div id="exportInfo" class="form-text"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="downloadBtn" class="btn btn-outline-secondary">Baixar .html</button>
+          <button type="button" id="copyBtn" class="btn btn-purple">Copiar código</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação genérico -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="confirmTitle">Confirmar ação</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body" id="confirmMsg"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmOk">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastHost"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="./scripts/script.js"></script>
+</body>
+</html>

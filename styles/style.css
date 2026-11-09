@@ -1,0 +1,377 @@
+/* =========================================================
+  Estilos EXCLUSIVOS da interface do construtor (prefixo vb-).
+  Nada aqui é exportado: o HTML gerado usa apenas classes Bootstrap.
+  ========================================================= */
+:root {
+    --vb-purple: #6f42c1;
+    --vb-purple-dark: #59359a;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #e9ecef;
+}
+
+/* Botões roxos (Bootstrap $purple) usando a API de variáveis do próprio Bootstrap */
+.btn-purple {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--vb-purple);
+    --bs-btn-border-color: var(--vb-purple);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #5a379f;
+    --bs-btn-hover-border-color: #533192;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #4d2f8c;
+    --bs-btn-active-border-color: #4d2f8c;
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--vb-purple);
+    --bs-btn-disabled-border-color: var(--vb-purple);
+    --bs-btn-focus-shadow-rgb: 111, 66, 193;
+}
+
+.text-purple {
+    color: var(--vb-purple);
+}
+
+.vb-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: .5rem;
+    background: var(--vb-purple);
+    color: #fff;
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+/* Layout principal */
+.vb-main {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.vb-sidebar {
+    width: 340px;
+    flex: none;
+    background: #fff;
+    border-right: 1px solid var(--bs-border-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.vb-sidebar-scroll {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.vb-stage {
+    flex: 1;
+    overflow: auto;
+    padding: 4rem 2rem 4rem;
+    position: relative;
+}
+
+.vb-canvas-wrap {
+    position: relative;
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+#canvas {
+    background: #fff;
+    min-height: 70vh;
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .12);
+    border-radius: .5rem;
+}
+
+@media (max-width: 991.98px) {
+    .vb-main {
+        flex-direction: column;
+    }
+
+    .vb-sidebar {
+        width: 100%;
+        height: 38vh;
+        border-right: 0;
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .vb-stage {
+        padding: 3.5rem 1rem 3rem;
+    }
+}
+
+/* Biblioteca */
+#library .accordion-button:not(.collapsed) {
+    background: #f1ebfa;
+    color: var(--vb-purple-dark);
+    box-shadow: none;
+}
+
+#library .accordion-button:focus {
+    box-shadow: 0 0 0 .2rem rgba(111, 66, 193, .25);
+}
+
+.vb-lib-item {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    overflow: hidden;
+    margin-bottom: .75rem;
+    background: #fff;
+    cursor: grab;
+}
+
+.vb-lib-item:last-child {
+    margin-bottom: 0;
+}
+
+.vb-lib-item:hover,
+.vb-lib-item:focus-visible {
+    border-color: var(--vb-purple);
+    box-shadow: 0 0 0 .15rem rgba(111, 66, 193, .2);
+    outline: 0;
+}
+
+.vb-lib-preview {
+    height: 96px;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: #fff;
+}
+
+.vb-lib-scale {
+    width: 1100px;
+    transform: scale(.285);
+    transform-origin: 0 0;
+    pointer-events: none;
+}
+
+/* Canvas: estado vazio, indicador de drop */
+.vb-empty {
+    display: none;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    border: 2px dashed #b9a3e3;
+    border-radius: .5rem;
+    color: #6c757d;
+}
+
+.vb-is-empty .vb-empty {
+    display: flex;
+}
+
+.vb-is-empty.vb-drag-over .vb-empty {
+    background: rgba(111, 66, 193, .08);
+    border-color: var(--vb-purple);
+}
+
+.vb-drop-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--vb-purple);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 50;
+    box-shadow: 0 0 0 3px rgba(111, 66, 193, .25);
+}
+
+/* Blocos (seções inseridas) */
+.vb-block {
+    position: relative;
+}
+
+.vb-block:hover {
+    outline: 2px dashed rgba(111, 66, 193, .6);
+    outline-offset: -2px;
+}
+
+.vb-block.vb-selected {
+    outline: 2px solid var(--vb-purple);
+    outline-offset: -2px;
+}
+
+.vb-block.vb-dragging {
+    opacity: .35;
+}
+
+.vb-toolbar {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    z-index: 40;
+    align-items: center;
+    gap: .25rem;
+    background: var(--vb-purple);
+    color: #fff;
+    padding: .25rem .4rem;
+    border-radius: .5rem .5rem 0 0;
+    white-space: nowrap;
+    font-size: .75rem;
+}
+
+.vb-block:hover>.vb-toolbar,
+.vb-block.vb-selected>.vb-toolbar {
+    display: flex;
+}
+
+.vb-toolbar .btn {
+    padding: .1rem .4rem;
+    line-height: 1.3;
+    font-size: .75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+.vb-toolbar .vb-accent {
+    width: auto;
+    font-size: .75rem;
+    padding: .1rem 1.6rem .1rem .45rem;
+}
+
+.vb-handle {
+    cursor: grab;
+    display: inline-flex;
+    padding: .15rem;
+    font-size: 1rem;
+}
+
+.vb-label {
+    font-weight: 600;
+    padding: 0 .25rem;
+    max-width: 14rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Edição inline e slots de ícone */
+.vb-editable {
+    cursor: text;
+}
+
+.vb-editable:hover {
+    outline: 1px dashed rgba(13, 110, 253, .7);
+    outline-offset: 2px;
+}
+
+.vb-editable:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+    border-radius: .2rem;
+}
+
+.vb-slot {
+    cursor: pointer;
+}
+
+.vb-slot:hover {
+    outline: 1px dashed #198754;
+    outline-offset: 2px;
+}
+
+.vb-slot:empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.9rem;
+    min-height: 1.9rem;
+    border: 1px dashed #adb5bd;
+    border-radius: .375rem;
+    font-size: 1rem;
+    color: #adb5bd;
+}
+
+.vb-slot:empty::before {
+    content: "+";
+}
+
+/* Modo pré-visualização: esconde toda a "cola" do construtor */
+body.vb-preview .vb-toolbar {
+    display: none !important;
+}
+
+body.vb-preview .vb-block:hover,
+body.vb-preview .vb-block.vb-selected {
+    outline: 0;
+}
+
+body.vb-preview .vb-editable:hover,
+body.vb-preview .vb-editable:focus,
+body.vb-preview .vb-slot:hover {
+    outline: 0;
+}
+
+body.vb-preview .vb-editable {
+    cursor: auto;
+}
+
+body.vb-preview .vb-slot {
+    cursor: auto;
+}
+
+body.vb-preview .vb-slot:empty {
+    display: none;
+}
+
+/* Seletor de ícones */
+.vb-picker {
+    position: fixed;
+    z-index: 2000;
+    width: 272px;
+    background: #fff;
+    border: 1px solid var(--bs-border-color);
+    border-radius: .5rem;
+    box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .2);
+    padding: .75rem;
+}
+
+.vb-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: .25rem;
+}
+
+.vb-icon-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    border-radius: .375rem;
+    font-size: 1.25rem;
+    padding: .35rem 0;
+    line-height: 1;
+    color: var(--bs-body-color);
+}
+
+.vb-icon-btn:hover,
+.vb-icon-btn:focus-visible {
+    background: #f1ebfa;
+    border-color: var(--vb-purple);
+    color: var(--vb-purple-dark);
+    outline: 0;
+}
+
+#exportCode {
+    white-space: pre;
+    overflow: auto;
+    font-size: .8rem;
+}
